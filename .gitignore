@@ -1,2 +1,4 @@
 gpu_list.csv
 venv
+.env
+__pycache__
