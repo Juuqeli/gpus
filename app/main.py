@@ -9,7 +9,7 @@ from databases import collection
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
-import datetime
+from datetime import datetime
 from transform import transform, gpu_list
 
 
@@ -21,15 +21,16 @@ def extract(page):
     return soup
 
 def load_to_mongodb(extracted_html):
+    datetime_str = datetime.now().strftime("%d/%m/%Y %H:%M:%S:%f")
     document = {
         "html_content": str(extracted_html),
         #"site_page_number": extracted_html.find('p', class_ = 'no_margin').contents[1],
         "source": "tori",
-        "load_time": datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S:%f")
+        "load_time": datetime.strptime(datetime_str, '%d/%m/%Y %H:%M:%S:%f')
     }
     collection.insert_one(document)
 
-#define a function to load transformed data to postgres
+#define a function to load transformed data into postgres
 
 for page in range(1,2): #call lastpage() here
     print(f'Extracting page {page} from tori.fi and loading to MongoDB')
@@ -37,5 +38,5 @@ for page in range(1,2): #call lastpage() here
     load_to_mongodb(parsed_html)
     transform(parsed_html)
 
-#print(gpu_list)
+print(gpu_list)
 
